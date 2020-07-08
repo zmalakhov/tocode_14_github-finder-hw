@@ -52,43 +52,23 @@
 
     export default {
         components: {search},
-        data() {
-            return {
-                // search: '',
-                //error: null,
-                user: null,
-                repos: null
-            }
-        },
         computed:{
             error(){
                 return this.$store.getters.getError
             },
             search(){
                 return this.$store.getters.getSearch
+            },
+            user(){
+                return this.$store.getters.getUser
+            },
+            repos(){
+                return this.$store.getters.getRepos
             }
         },
         methods: {
             getRepos() {
-                axios.all([axios.get(`https://api.github.com/users/${this.$store.getters.getSearch}`),
-                    axios.get(`https://api.github.com/users/${this.search}/repos`)])
-                    .then(axios.spread((userResponse, reposResponse) => {
-                        // console.log(userResponse.data,reposResponse.data);
-                        // this.error = null
-                        this.$store.dispatch('setError', null)
-                        this.user = userResponse.data
-                        this.repos = reposResponse.data
-
-                    }))
-                    .catch(error => {
-                        // console.log(error)
-                        this.repos = null
-                        this.user = null
-                        // this.error = 'Can`t find this user'
-                        this.$store.dispatch('setError', 'Can`t find this user')
-                    });
-
-
+                this.$store.dispatch("loadData")
             }
         }
     }
