@@ -20,6 +20,12 @@ export default {
         setRepos({commit}, payload){
             commit('setRepos', payload)
         },
+        loadDataLazy({commit, dispatch}){
+            commit('setLoading', true)
+            setTimeout(() =>{
+                dispatch('loadData')
+            }, 500)
+        },
         async loadData({commit, getters, dispatch}){
             axios.all([axios.get(`https://api.github.com/users/${getters.getSearch}`),
                 axios.get(`https://api.github.com/users/${getters.getSearch}/repos`)])
@@ -50,7 +56,11 @@ export default {
                     // this.$store.dispatch('setError', 'Can`t find this user')
                     commit('setError', 'Can`t find this user')
 
-                });
+                })
+                .finally(() => {
+                    commit('setLoading', false)
+                })
+
         }
     },
     getters: {

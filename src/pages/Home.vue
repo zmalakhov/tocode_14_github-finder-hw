@@ -21,6 +21,12 @@
                 <button v-if="!repos" class="btn btnPrimary" @click="getRepos">Search</button>
                 <button v-else class="btn btnPrimary" @click="getRepos">Search Again</button>
 
+                <div class="content">
+                    <!--preloader-->
+                    <preloader v-if="loading" :width="90" :height="90"/>
+
+                </div>
+
                 <!--user__wrapper-->
                 <div class="user__wrapper" v-if="user">
                     <div class="user-avatar"><img :src="user.avatar_url" :alt="user.name"></div>
@@ -48,16 +54,20 @@
 
 <script>
     import search from '@/components/Search'
-    import axios from 'axios'
+    // UI
+    import preloader from '@/components/UI/Preloader.vue'
 
     export default {
-        components: {search},
+        components: {search, preloader},
         computed:{
             error(){
                 return this.$store.getters.getError
             },
             search(){
                 return this.$store.getters.getSearch
+            },
+            loading() {
+                return this.$store.getters.getLoading
             },
             user(){
                 return this.$store.getters.getUser
@@ -68,7 +78,8 @@
         },
         methods: {
             getRepos() {
-                this.$store.dispatch("loadData")
+                //this.$store.dispatch("loadData")
+                this.$store.dispatch("loadDataLazy")
             }
         }
     }
@@ -120,5 +131,8 @@
 
     .error {
         margin-bottom: 20px;
+    }
+    .content{
+        padding-top: 30px;
     }
 </style>

@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import finder from './finder'
 import search from './search'
 import error from './error'
+import loader from './loader'
 
 
 Vue.use(Vuex)
@@ -13,5 +14,7 @@ export default new Vuex.Store({
         finder,
         search,
         error,
+        loader,
+
     }
 })
