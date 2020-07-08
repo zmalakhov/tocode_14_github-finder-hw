@@ -12,13 +12,14 @@
                         :value="search"
                         placeholder="Type user name"
                 />
-<!--                <search-->
-<!--                        :value="search"-->
-<!--                        placeholder="Type user name"-->
-<!--                        @search="search = $event"-->
-<!--                />-->
+                <!--                <search-->
+                <!--                        :value="search"-->
+                <!--                        placeholder="Type user name"-->
+                <!--                        @search="search = $event"-->
+                <!--                />-->
 
-                <button v-if="!repos" class="btn btnPrimary" @click="getRepos">Search</button>
+                <button v-if="repos.length === 0" class="btn btnPrimary" @click="getRepos">Search</button>
+<!--                <button v-if="!repos" class="btn btnPrimary" @click="getRepos">Search</button>-->
                 <button v-else class="btn btnPrimary" @click="getRepos">Search Again</button>
 
                 <div class="content">
@@ -47,6 +48,15 @@
                     </div>
                 </div>
 
+                <button
+                        v-if="repos.length !== 0"
+                        class="btn btnPrimary"
+                        @click="loadMore"
+                        :disabled="maxLength === 0"
+                        :class="{btnDisabled: maxLength === 0}">
+                    Load more
+                </button>
+
             </div>
         </section>
     </div>
@@ -59,27 +69,37 @@
 
     export default {
         components: {search, preloader},
-        computed:{
-            error(){
+        computed: {
+            error() {
                 return this.$store.getters.getError
             },
-            search(){
+            search() {
                 return this.$store.getters.getSearch
             },
             loading() {
                 return this.$store.getters.getLoading
             },
-            user(){
+            user() {
                 return this.$store.getters.getUser
             },
-            repos(){
-                return this.$store.getters.getRepos
-            }
+            repos() {
+                //return this.$store.getters.getRepos
+                return this.$store.getters.getReposMain
+            },
+            maxLength() {
+                return this.$store.getters.getReposFilter.length
+            },
         },
         methods: {
             getRepos() {
                 //this.$store.dispatch("loadData")
                 this.$store.dispatch("loadDataLazy")
+            },
+            loadMore() {
+                this.$store.dispatch('loadRepos')
+                    .catch(err => {
+                        console.log(err)
+                    })
             }
         }
     }
@@ -119,12 +139,13 @@
         justify-content: center;
     }
 
-    .user-avatar{
+    .user-avatar {
         width: 25%;
     }
+
     .user-info {
         /*width: 75%;*/
-        p{
+        p {
             padding: 10px 20px;
         }
     }
@@ -132,7 +153,18 @@
     .error {
         margin-bottom: 20px;
     }
-    .content{
+
+    .content {
         padding-top: 30px;
     }
+
+    button {
+        margin-top: 20px;
+
+        &.btnDisabled {
+            cursor: default;
+            opacity: .6;
+        }
+    }
+
 </style>
