@@ -28,7 +28,7 @@
                 </div>
 
                 <!--user__wrapper-->
-                <div class="user__wrapper" v-if="user">
+                <div class="user__wrapper" v-if="user && !loading && !error">
                     <div class="user-avatar"><img :src="user.avatar_url" :alt="user.name"></div>
                     <div class="user-info">
                         <p>Name: {{ user.name }} </p>
@@ -37,7 +37,7 @@
                 </div>
 
                 <!--repos__wrapper-->
-                <div class="repos__wrapper" v-if="repos">
+                <div class="repos__wrapper" v-if="repos && !loading && !error">
                     <!--repo-item-->
                     <div class="repos-item" v-for="repo in repos" :key="repo.id">
                         <div class="repos-info">
