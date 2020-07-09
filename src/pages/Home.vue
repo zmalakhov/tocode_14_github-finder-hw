@@ -12,20 +12,13 @@
                         :value="search"
                         placeholder="Type user name"
                 />
-                <!--                <search-->
-                <!--                        :value="search"-->
-                <!--                        placeholder="Type user name"-->
-                <!--                        @search="search = $event"-->
-                <!--                />-->
 
                 <button v-if="repos.length === 0" class="btn btnPrimary" @click="getRepos">Search</button>
-<!--                <button v-if="!repos" class="btn btnPrimary" @click="getRepos">Search</button>-->
                 <button v-else class="btn btnPrimary" @click="getRepos">Search Again</button>
 
                 <div class="content">
                     <!--preloader-->
                     <preloader v-if="loading" :width="90" :height="90"/>
-
                 </div>
 
                 <!--user__wrapper-->
@@ -39,6 +32,11 @@
 
                 <!--repos__wrapper-->
                 <div class="repos__wrapper" v-if="repos && !loading && !error">
+                    <div class="repos-head">
+                        <p class="link" @click="sort('name')">Name ↕</p>
+                        <p class="link"  @click="sort('stargazers_count')">Stars ↕</p>
+                    </div>
+
                     <!--repo-item-->
                     <div class="repos-item" v-for="repo in repos" :key="repo.id">
                         <div class="repos-info">
@@ -56,6 +54,8 @@
                         :class="{btnDisabled: maxLength === 0}">
                     Load more
                 </button>
+
+                <p> debug - sort: {{ currentSort }}, dir: {{ currentSortDir }}</p>
 
             </div>
         </section>
@@ -89,6 +89,12 @@
             maxLength() {
                 return this.$store.getters.getReposFilter.length
             },
+            currentSort() {
+                return this.$store.getters.getCurrentSort
+            },
+            currentSortDir() {
+                return this.$store.getters.getCurrentSortDir
+            },
         },
         methods: {
             getRepos() {
@@ -100,6 +106,9 @@
                     .catch(err => {
                         console.log(err)
                     })
+            },
+            sort(e){
+                this.$store.dispatch('setSort', e)
             }
         }
     }
@@ -120,6 +129,12 @@
     .repos__wrapper {
         width: 400px;
         margin: 30px 0;
+    }
+
+    .repos-head{
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 20px;
     }
 
     .repos-info {
